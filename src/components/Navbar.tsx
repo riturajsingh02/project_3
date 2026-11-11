@@ -75,25 +75,33 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollYRef = useRef(0);
+  const tickingRef = useRef(false);
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       setScrolled(currentScrollY > 20);
 
-      const previousScrollY = lastScrollYRef.current;
+      if (!tickingRef.current) {
+        window.requestAnimationFrame(() => {
+          const previousScrollY = lastScrollYRef.current;
+          const diff = currentScrollY - previousScrollY;
 
-      if (currentScrollY <= 60) {
-        setIsVisible(true);
-      } else if (currentScrollY > previousScrollY && currentScrollY > 60) {
-        // Scrolling down past 60px -> hide navbar (-translate-y-full)
-        setIsVisible(false);
-      } else if (currentScrollY < previousScrollY) {
-        // Scrolling up -> show navbar (translate-y-0)
-        setIsVisible(true);
+          if (currentScrollY <= 60) {
+            setIsVisible(true);
+          } else if (diff > 5 && currentScrollY > 60) {
+            // Scrolling down -> hide
+            setIsVisible(false);
+          } else if (diff < -5) {
+            // Scrolling up -> show
+            setIsVisible(true);
+          }
+
+          lastScrollYRef.current = currentScrollY > 0 ? currentScrollY : 0;
+          tickingRef.current = false;
+        });
+        tickingRef.current = true;
       }
-
-      lastScrollYRef.current = currentScrollY;
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -135,7 +143,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <header className={`sticky top-0 z-50 w-full max-w-full overflow-x-hidden bg-white select-none transition-transform duration-300 ease-in-out ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+    <header className={`sticky top-0 z-50 w-full max-w-full overflow-x-hidden bg-white shadow-md select-none transition-transform duration-300 ease-in-out ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
       {/* 1. TOP ANNOUNCEMENT BAR WITH WOW FACTOR (Interactive Carousel & Shimmer Glow) */}
       <div className="relative bg-gradient-to-r from-[#6b0f0f] via-[#b91c1c] via-[#991b1b] to-[#6b0f0f] text-white py-2 px-2.5 sm:px-6 overflow-hidden border-b border-[#7f1d1d] shadow-xs">
         {/* Subtle Golden Shimmer Highlight along top edge */}
