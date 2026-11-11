@@ -116,44 +116,41 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     setIsSubmitting(true);
     setSavedItems([...items]);
     setSavedTotal(totalAmount);
-    const message = buildOrderText();
-    setOrderSummaryMsg(message);
 
-    // Try web share first if files are supported
-    const canShareFiles =
-      navigator.canShare &&
-      screenshotFile &&
-      navigator.canShare({ files: [screenshotFile] });
-
-    if (canShareFiles) {
-      try {
-        await navigator.share({
-          title: `Kumaon Herbal Order - ${form.fullName}`,
-          text: message,
-          files: [screenshotFile],
-        });
-        setOrderSent(true);
-        setIsSubmitting(false);
-        onOrderSuccess();
-        return;
-      } catch (err) {
-        // User cancelled share dialog or API failed, fallback to direct wa.me link
-      }
-    }
-
-    // Direct WhatsApp redirect fallback
-    const waUrl = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(
-      message + '\n\n(Please attach the payment screenshot in this chat)'
-    )}`;
     try {
-      window.open(waUrl, '_blank');
-    } catch {
-      // Ignored if window.open is restricted by sandbox
-    }
+      const formData = new FormData();
+      formData.append('fullName', form.fullName);
+      formData.append('phone', form.phone);
+      formData.append('email', form.email || '');
+      formData.append('address', form.address);
+      formData.append('city', form.city || '');
+      formData.append('state', form.state || 'Uttarakhand');
+      formData.append('pincode', form.pincode || '');
+      formData.append('itemsJson', JSON.stringify(items));
+      formData.append('totalAmount', String(totalAmount));
+      if (screenshotFile) {
+        formData.append('screenshot', screenshotFile);
+      }
 
-    setOrderSent(true);
-    setIsSubmitting(false);
-    onOrderSuccess();
+      const res = await fetch('/api/send-order', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to submit order to backend.');
+      }
+
+      const message = buildOrderText();
+      setOrderSummaryMsg(message);
+      setOrderSent(true);
+      setIsSubmitting(false);
+      onOrderSuccess();
+    } catch (err: any) {
+      setIsSubmitting(false);
+      setFormError(err.message || 'Error submitting order. Please try again.');
+    }
   };
 
   return (
