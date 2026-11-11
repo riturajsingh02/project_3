@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* Food On Farm Pickles Inspired Red & White Palette */
+    --primary: #b91c1c;        /* Rich Crimson Red */
+    --primary-dark: #881337;   /* Deep Wine/Spiced Red */
+    --primary-hover: #dc2626;  /* Bright Chili Red */
+    --primary-light: #fef2f2;  /* Soft Warm White / Subtle Tint */
+    --primary-border: #fca5a5; /* Soft Red Border */
+    --secondary-gold: #d97706; /* Spiced Turmeric/Mustard Accent */
+    
+    --bg-white: #ffffff;
+    --bg-subtle: #fafafa;
+    --bg-cream: #fff5f5;
+    
+    --text-primary: #18181b;   /* Deep charcoal black for sharp contrast */
+    --text-secondary: #52525b; /* Neutral gray */
+    --text-muted: #71717a;     /* Muted gray */
+    
+    --border-light: #f1f1f4;
+    --border-card: #e4e4e7;
+  }
+
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+    width: 100%;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-white);
+    color: var(--text-primary);
+  }
+
+  *, *:before, *:after {
+    box-sizing: inherit;
+  }
+
+  h1, h2, h3, .font-serif {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+}
+
+/* Custom scrollbar in red */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #fef2f2;
+}
+::-webkit-scrollbar-thumb {
+  background: #b91c1c;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #991b1b;
+}

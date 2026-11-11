@@ -1,0 +1,6 @@
+{
+  "name": "Kumaon Herbal | Himalayan Foods & Wellness",
+  "description": "Authentic Himalayan Black Garlic, cold-pressed juices, traditional handmade pickles, and wellness products from Kotabagh, Nainital, Uttarakhand.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
